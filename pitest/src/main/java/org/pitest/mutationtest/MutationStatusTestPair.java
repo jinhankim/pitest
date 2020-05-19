@@ -28,6 +28,7 @@ public final class MutationStatusTestPair implements Serializable {
   private final DetectionStatus status;
   private final List<String>    killingTests;
   private final List<String>    succeedingTests;
+  private List<String>    stackTraces = Collections.emptyList();
 
   public static MutationStatusTestPair notAnalysed(int testsRun, DetectionStatus status) {
     return new MutationStatusTestPair(testsRun, status, Collections.emptyList(), Collections.emptyList());
@@ -47,7 +48,11 @@ public final class MutationStatusTestPair implements Serializable {
     this.succeedingTests = succeedingTests;
     this.numberOfTestsRun = numberOfTestsRun;
   }
-  
+
+  public void setStackTraces(List<String> stackTraces) {
+    this.stackTraces = stackTraces;
+  }
+
   private static List<String> killingTestToList(String killingTest) {
     if (killingTest == null) {
       return Collections.emptyList();
@@ -75,14 +80,18 @@ public final class MutationStatusTestPair implements Serializable {
    *  If the full mutation matrix is not enabled, this will only be the first killing test. 
    */
   public List<String> getKillingTests() {
-    return killingTests;
+    return this.killingTests;
   }
 
   /** Get all succeeding tests.
    *  If the full mutation matrix is not enabled, this list will be empty. 
    */
   public List<String> getSucceedingTests() {
-    return succeedingTests;
+    return this.succeedingTests;
+  }
+  
+  public List<String> getStackTraces() {
+    return this.stackTraces;
   }
 
   public int getNumberOfTestsRun() {
@@ -116,6 +125,6 @@ public final class MutationStatusTestPair implements Serializable {
     return numberOfTestsRun == other.numberOfTestsRun
             && status == other.status
             && Objects.equals(killingTests, other.killingTests)
-            && Objects.equals(succeedingTests, other.succeedingTests);
+            && Objects.equals(succeedingTests, other.succeedingTests);            
   }
 }

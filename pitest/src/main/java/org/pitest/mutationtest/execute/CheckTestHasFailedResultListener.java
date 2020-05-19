@@ -20,11 +20,15 @@ import org.pitest.mutationtest.DetectionStatus;
 import org.pitest.testapi.Description;
 import org.pitest.testapi.TestListener;
 import org.pitest.testapi.TestResult;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class CheckTestHasFailedResultListener implements TestListener {
 
   private final List<Description>   succeedingTests = new ArrayList<>();
   private final List<Description>   failingTests = new ArrayList<>();
+  private List<Throwable>     throwables = new ArrayList<>();  
+  
   private final boolean       recordPassingTests;
   private int                 testsRun        = 0;
 
@@ -35,6 +39,23 @@ public class CheckTestHasFailedResultListener implements TestListener {
   @Override
   public void onTestFailure(final TestResult tr) {
     this.failingTests.add(tr.getDescription());
+    this.throwables.add(tr.getThrowable());
+  }
+  
+  public List<String> getStackTraces() {
+	  List<String> stackTraces = new ArrayList<>();
+      ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+      PrintStream outPS = new PrintStream(outStream);
+      for (Throwable t: this.throwables) {
+          if (t != null) {
+               t.printStackTrace(outPS);
+               stackTraces.add(outStream.toString());
+          } else {
+               stackTraces.add("");
+          }
+      }
+
+      return stackTraces;
   }
 
   @Override

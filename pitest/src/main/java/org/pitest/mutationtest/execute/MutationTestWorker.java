@@ -204,8 +204,10 @@ public class MutationTestWorker {
     List<String> succeedingTests = listener.getSucceedingTests().stream()
         .map(description -> description.getQualifiedName()).collect(Collectors.toList());
 
-    return new MutationStatusTestPair(listener.getNumberOfTestsRun(),
+    MutationStatusTestPair mstp = new MutationStatusTestPair(listener.getNumberOfTestsRun(),
         listener.status(), failingTests, succeedingTests);
+    mstp.setStackTraces(listener.getStackTraces());
+    return mstp;
   }
 
   private List<TestUnit> createEarlyExitTestGroup(final List<TestUnit> tests) {
